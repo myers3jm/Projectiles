@@ -1,6 +1,7 @@
 # Projectile Simulation with Plotting
 # J. Matthew Myers
-# Copyright January 6, 2022
+# January 6, 2022
+# Distributed under the terms of the GNU GPLv3 license.
 
 # This program utilizes the graphics.py written by John Zelle.
 # graphics.py is open-source and released under the terms of the GPL.
@@ -11,6 +12,8 @@ from projectile import *
 from graphics import *
 from button import Button
 
+# getInputs
+# Returns user-inputted values for launch angle, velocity, and sets the starting height and time to 0 and 0.1
 def getInputs():
     a = eval(input("Enter the launch angle (in degrees): "))
     v = eval(input("Enter the initial velocity (in meters/sec): "))
@@ -18,6 +21,9 @@ def getInputs():
     t = 0.01 # Fix initial time interval at 0.01 sec
     return a, v, h, t
 
+# makeButtons
+# Takes the graphical window object as an argument
+# Returns the Button objects to be used in the graphical window
 def makeButtons(win):
     # Create buttons Button(win, center, width, height, label)
     fire = Button(win, Point(100,900), 155, 40, "Fire")
@@ -35,6 +41,9 @@ def makeButtons(win):
 
     return fire, aPlus5, aMinus5, vPlus5, vMinus5, _quit
 
+# _fire
+# Takes the graphical window object, the angle, velocity, initial height, and starting time as arguments
+# Returns nothing
 def _fire(win, angle, velocity, h0, time):
     # Cannonball object
     cball = Projectile(angle, velocity, h0)
@@ -55,22 +64,27 @@ def _fire(win, angle, velocity, h0, time):
         if cball.getY() > maxY:
             maxY = cball.getY()
 
+# Increases the launch angle by 5
 def anglePlus5(angle):
     angle += 5
     return angle
 
+# Decreases the launch angle by 5
 def angleMinus5(angle):
     angle -= 5
     return angle
 
+# Increases the launch velocity by 5
 def velocityPlus5(velocity):
     velocity += 5
     return velocity
 
+# Decreases the launch velocity by 5
 def velocityMinus5(velocity):
     velocity -= 5
     return velocity
 
+# Closes the window
 def quit_(win):
     win.close()
 
@@ -84,14 +98,14 @@ def main():
     win = GraphWin("Projectile Trajectory", screenWidth, screenHeight)
     win.setBackground("white")
 
-    # define world coordinate system
+    # Define world coordinate system
     win.setCoords(-20, -20, 1260 ,940)
 
-    # draw axes
+    # Draw axes
     Line(Point(0, 0), Point(1240, 0)).draw(win)
     Line(Point(0, 0), Point(0, 920)).draw(win)
 
-    # make buttons
+    # Make buttons
     fire, aPlus5, aMinus5, vPlus5, vMinus5, _quit = makeButtons(win)
 
     # Display angle
@@ -102,16 +116,19 @@ def main():
     velocityMessage = Text(Point(screenWidth, 2 * screenHeight - 40), ("Velocity = {}".format(velocity)))
     velocityMessage.draw(win)
 
-    # fire first cannonball
+    # Fire first cannonball
     _fire(win, angle, velocity, h0, time)
 
+    # Flight data output
     #print("\nDistance traveled: {0:0.1f} meters.".format(cball.getX()))
     #print("Maximum height: {0:0.1f} meters ".format(maxY))
 
     # Main loop
     while True:
+        # Get mouse position
         pt = win.getMouse()
-
+        
+        # Handle button clicks
         if fire.clicked(pt):
             _fire(win, angle, velocity, h0, time)
         if aPlus5.clicked(pt):
@@ -125,6 +142,7 @@ def main():
         if _quit.clicked(pt):
             quit_(win)
 
+        # Display current angle and velocity
         angleMessage.setText(("Angle = {}".format(angle)))
         velocityMessage.setText(("Velocity = {}".format(velocity)))
 
